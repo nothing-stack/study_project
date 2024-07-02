@@ -82,12 +82,12 @@ int main(int argc,char *argv[])
     Thread1.join();
     Thread2.join();
 
-    /*std::thread producer(producerThread,1),producerx(producerThread,2);
+    std::thread producer(producerThread,1),producerx(producerThread,2);
     std::thread consumer(consumerThread,1),consumerx(consumerThread,2);
 
     producer.join();
     producerx.join();
     consumer.join();
-    consumerx.join();*/
+    consumerx.join();
     return 0;
 }
