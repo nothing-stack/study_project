@@ -7,6 +7,8 @@
 #include <semaphore.h>
 //多线程中互斥锁与条件变量一起使用，保证同一时刻只有一个线程可以访问共享资源，来避免访问共享资源产生的竞态问题
 //wait,wait_for都是阻塞性，前者一直等待条件满足，后者等待一定时间。
+//系统资源注意点：创建线程，操作系统便会为其分配一个栈空间，如果线程数量越多，所需的栈空间就越大，虚拟内存占用就越多。
+
 /*使用注意点：
 1.正确初始化条件变量。
 2.在持有互斥锁的情况下才能调用条件变量的等待函数，避免竞态情况。
@@ -125,10 +127,10 @@ void increase_sem_thread()
 {
     while(1)
     {
-        sem_wait(&semaphore);
+        sem_wait(&semaphore);//获取信号量
         shared_resource++;
         cout<<"the increase resource:"<<shared_resource<<endl;
-        sem_post(&semaphore);
+        sem_post(&semaphore);//释放信号量
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
@@ -172,8 +174,10 @@ int main(int argc,char *argv[])
     std::thread producer(increase_sem_thread);
     std::thread consumer(reduce_sem_thread);
 
-    producer.detach();
-    consumer.detach();
+    producer.join();
+    consumer.join();
+    //producer.detach();
+    //consumer.detach();
 
     while(1);
 
